@@ -17,6 +17,9 @@ requirejs([
     '../lib/jira/ls',
     '../lib/jira/describe',
     '../lib/jira/assign',
+    '../lib/jira/fix',
+    '../lib/jira/release',
+    '../lib/jira/send',
     '../lib/jira/comment',
     '../lib/jira/create',
     '../lib/jira/sprint',
@@ -27,25 +30,25 @@ requirejs([
     '../lib/jira/add_to_sprint',
     '../lib/jira/new',
     '../lib/jira/edit'
-], function (program, config, auth, ls, describe, assign, comment, create, sprint, transitions, worklog, link, watch, add_to_sprint, new_create, edit) {
+], function(program, config, auth, ls, describe, assign, fix, release, send, comment, create, sprint, transitions, worklog, link, watch, add_to_sprint, new_create, edit) {
 
     function finalCb(err) {
-      if(err){
-          console.log(err.toString());
-      }
-      process.exit(1);
+        if (err) {
+            console.log(err.toString());
+        }
+        process.exit(1);
     }
 
     program
-        .version('v0.5.4');
+        .version('v1.0.0');
 
     program
         .command('ls')
         .description('List my issues')
         .option('-p, --project <name>', 'Filter by project', String)
         .option('-t, --type <name>', 'Filter by type', String)
-        .action(function (options) {
-            auth.setConfig(function (auth) {
+        .action(function(options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (options.project) {
                         ls.showByProject(options.project, options.type, finalCb);
@@ -59,8 +62,8 @@ requirejs([
     program
         .command('start <issue>')
         .description('Start working on an issue.')
-        .action(function (issue) {
-            auth.setConfig(function (auth) {
+        .action(function(issue) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     transitions.start(issue);
                 }
@@ -70,8 +73,8 @@ requirejs([
     program
         .command('stop <issue>')
         .description('Stop working on an issue.')
-        .action(function (issue) {
-            auth.setConfig(function (auth) {
+        .action(function(issue) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     transitions.stop(issue);
                 }
@@ -81,8 +84,8 @@ requirejs([
     program
         .command('review <issue> [assignee]')
         .description('Mark issue as being reviewed [by assignee(optional)].')
-        .action(function (issue, assignee) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, assignee) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     transitions.review(issue);
                     if (assignee) {
@@ -97,8 +100,8 @@ requirejs([
         .option('-r, --resolution <name>', 'resolution name (e.g. \'Resolved\')', String)
         .option('-t, --timeSpent <time>', 'how much time spent (e.g. \'3h 30m\')', String)
         .description('Mark issue as finished.')
-        .action(function (issue, options) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
 
                     if (options.timeSpent) {
@@ -113,8 +116,8 @@ requirejs([
     program
         .command('invalid <issue>')
         .description('Mark issue as finished.')
-        .action(function (issue) {
-            auth.setConfig(function (auth) {
+        .action(function(issue) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     transitions.invalid(issue);
                 }
@@ -124,25 +127,25 @@ requirejs([
     program
         .command('mark <issue>')
         .description('Mark issue as.')
-        .action(function (issue) {
-            auth.setConfig(function (auth) {
+        .action(function(issue) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     transitions.makeTransition(issue, finalCb);
                 }
             });
         });
-    
+
     program
         .command('edit <issue> [input]')
         .description('edit issue.')
-        .action(function (issue, input) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, input) {
+            auth.setConfig(function(auth) {
                 if (auth) {
-		    if(input){
-			edit.editWithInputPutBody(issue, input, finalCb);
-		    } else{
-			edit.edit(issue, finalCb);
-		    }
+                    if (input) {
+                        edit.editWithInputPutBody(issue, input, finalCb);
+                    } else {
+                        edit.edit(issue, finalCb);
+                    }
                 }
             });
         });
@@ -150,8 +153,8 @@ requirejs([
     program
         .command('running')
         .description('List issues in progress.')
-        .action(function () {
-            auth.setConfig(function (auth) {
+        .action(function() {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     ls.showInProgress(finalCb);
                 }
@@ -164,23 +167,23 @@ requirejs([
         .option('-c, --custom <name>', 'Filter by custom jql saved in jira config', String)
         .option('-s, --custom_sql <name>', 'Filter by custom alasql saved in jira config', String)
         .option('-j, --json <value>', 'Output in json', String, 0)
-        .action(function (query, options) {
-            auth.setConfig(function (auth) {
+        .action(function(query, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
-                  if(options.custom_sql){
-                    ls.aggregateResults(query, options, finalCb);
-                  } else {
-                    ls.jqlSearch(query, options, finalCb);
-                  }
-                }              
+                    if (options.custom_sql) {
+                        ls.aggregateResults(query, options, finalCb);
+                    } else {
+                        ls.jqlSearch(query, options, finalCb);
+                    }
+                }
             });
         });
 
     program
         .command('link <from> <to> [link_value]')
         .description('link issues')
-        .action(function (from, to, link_value, options) {
-            auth.setConfig(function (auth) {
+        .action(function(from, to, link_value, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     link(from, to, link_value, options, finalCb);
                 }
@@ -190,8 +193,8 @@ requirejs([
     program
         .command('search <term>')
         .description('Find issues.')
-        .action(function (query) {
-            auth.setConfig(function (auth) {
+        .action(function(query) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     ls.search(query, finalCb);
                 }
@@ -202,8 +205,8 @@ requirejs([
     program
         .command('assign <issue> [user]')
         .description('Assign an issue to <user>. Provide only issue# to assign to me')
-        .action(function (issue, user) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, user) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (user) {
                         user = config.user_alias[user];
@@ -218,8 +221,8 @@ requirejs([
     program
         .command('watch <issue> [user]')
         .description('Watch an issue to <user>. Provide only issue# to watch to me')
-        .action(function (issue, user) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, user) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (user) {
                         user = config.user_alias[user];
@@ -234,21 +237,21 @@ requirejs([
     program
         .command('comment <issue> [text]')
         .description('Comment an issue.')
-        .action(function (issue, text) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, text) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (text) {
-                      //replace name in comment text if present in user_alias config
-                      //if vikas is nickname stored in user_alias config for vikas.sharma
-                      //then 'vikas has username [~vikas] [~ajitk] [~mohit] becomes 'vikas has username [~vikas.sharma] [~ajitk] [~mohit]
-                      //names which do not match any alias are not changed
-                      text = text.replace(/\[~(.*?)\]/g,function(match, tag, index){
-                        if(config.user_alias[tag]){
-                          return '[~'+config.user_alias[tag]+']';
-                        } else {
-                          return tag;
-                        }
-                      });
+                        //replace name in comment text if present in user_alias config
+                        //if vikas is nickname stored in user_alias config for vikas.sharma
+                        //then 'vikas has username [~vikas] [~ajitk] [~mohit] becomes 'vikas has username [~vikas.sharma] [~ajitk] [~mohit]
+                        //names which do not match any alias are not changed
+                        text = text.replace(/\[~(.*?)\]/g, function(match, tag, index) {
+                            if (config.user_alias[tag]) {
+                                return '[~' + config.user_alias[tag] + ']';
+                            } else {
+                                return tag;
+                            }
+                        });
                         comment.to(issue, text);
                     } else {
                         comment.show(issue);
@@ -261,8 +264,8 @@ requirejs([
         .command('show <issue>')
         .description('Show info about an issue')
         .option('-o, --output <field>', 'Output field content', String)
-        .action(function (issue, options) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (options.output) {
                         describe.show(issue, options.output);
@@ -276,8 +279,8 @@ requirejs([
     program
         .command('open <issue>')
         .description('Open an issue in a browser')
-        .action(function (issue, options) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     describe.open(issue);
                 }
@@ -287,8 +290,8 @@ requirejs([
     program
         .command('worklog <issue>')
         .description('Show worklog about an issue')
-        .action(function (issue) {
-            auth.setConfig(function (auth) {
+        .action(function(issue) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     worklog.show(issue);
                 }
@@ -299,15 +302,15 @@ requirejs([
         .command('worklogadd <issue> <timeSpent> [comment]')
         .description('Log work for an issue')
         .option("-s, --startedAt [value]", "Set date of work (default is now)")
-        .action(function (issue, timeSpent, comment, p) {
-            auth.setConfig(function (auth) {
+        .action(function(issue, timeSpent, comment, p) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     var o = p.startedAt || new Date().toString(),
                         s = new Date(o);
                     worklog.add(issue, timeSpent, comment, s);
                 }
             });
-        }).on('--help', function () {
+        }).on('--help', function() {
             console.log('  Worklog Add Help:');
             console.log();
             console.log('    <issue>: JIRA issue to log work for');
@@ -326,8 +329,8 @@ requirejs([
         .option('-t --title <title>', 'Issue title', String)
         .option('-d --description <description>', 'Issue description', String)
         .option('-a --assignee <assignee>', 'Issue assignee', String)
-        .action(function (projIssue, options) {
-            auth.setConfig(function (auth) {
+        .action(function(projIssue, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     create.newIssue(projIssue, options);
                 }
@@ -344,11 +347,11 @@ requirejs([
         .option('-t --title <title>', 'Issue title', String)
         .option('-d --description <description>', 'Issue description', String)
         .option('-a --assignee <assignee>', 'Issue assignee', String)
-        .action(function (key, options) {      
-            auth.setConfig(function (auth) {
+        .action(function(key, options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
-                  options.key=key;
-                  new_create.create(options, finalCb);
+                    options.key = key;
+                    new_create.create(options, finalCb);
                 }
             });
         });
@@ -357,44 +360,109 @@ requirejs([
         .command('config')
         .description('Change configuration')
         .option('-c, --clear', 'Clear stored configuration')
-        .action(function (options) {
+        .action(function(options) {
             if (options.clear) {
                 auth.clearConfig();
             } else {
-                auth.setConfig();
+                auth.setConfig(function(auth) {
+                    if (auth) {
+                        if (options.auth) {
+                            console.log("url :" + config.auth.url);
+                            console.log("user:" + config.auth.user);
+                        }
+                        if (options.url) {
+                            console.log(config.auth.url);
+                        }
+                    } else {
+                        auth.setConfig();
+                    }
+                });
             }
-        }).on('--help', function () {
+        }).on('--help', function() {
             console.log('  Config Help:');
             console.log();
             console.log('    Jira URL: https://foo.atlassian.net/');
             console.log('    Username: user (for user@foo.bar)');
             console.log('    Password: Your password');
-            console.log();
+            console.log('');
+            console.log('WARNING:After three failed login attempts Atlassian forces a CAPTCHA login');
+            console.log('WARNING:  which can only be done via the browser.');
         });
 
     program
         .command('sprint')
         .description('Works with sprint boards\n' +
-            'With no arguments, displays all rapid boards\n' +
-            'With -r argument, attempt to find a single rapid board ' +
-            'and display its active sprints\nWith both -r and -s arguments ' +
-            'attempt to get a single rapidboard/ sprint and show its issues. If ' +
-            'a single sprint board isnt found, show all matching sprint boards')
+            '\t\t\t\tWith no arguments, displays all rapid boards\n' +
+            '\t\t\t\tWith -r argument, attempt to find a single rapid board\n ' +
+            '\t\t\t\tand display its active sprints\n' +
+            '\t\t\t\tWith both -r and -s arguments\n ' +
+            '\t\t\t\tattempt to get a single rapidboard/ sprint and show its issues. If\n ' +
+            '\t\t\t\ta single sprint board isnt found, show all matching sprint boards\n')
         .option('-r, --rapidboard <name>', 'Rapidboard to show sprints for', String)
         .option('-s, --sprint <name>', 'Sprint to show the issues', String)
         .option('-a, --add <projIssue> ', 'Add project issue to sprint', String)
         .option('-i, --sprintId <sprintId> ', 'Id of the sprint which you want your issues to be added to', String)
         .option('-j, --jql <jql> ', 'jql of the issues which you want to add to the sprint', String)
-        .action(function (options) {
-            auth.setConfig(function (auth) {
+        .action(function(options) {
+            auth.setConfig(function(auth) {
                 if (auth) {
                     if (options.add) {
                         add_to_sprint.addIssuesViaKey(options, finalCb);
-                    } else if (options.jql){
-                      add_to_sprint.addAllJqlToSprint(options, finalCb)
-                    }else {
+                    } else if (options.jql) {
+                        add_to_sprint.addAllJqlToSprint(options, finalCb)
+                    } else {
                         sprint(options.rapidboard, options.sprint, finalCb);
                     }
+                }
+            });
+        });
+
+    program
+        .command('fix <issue> <version>')
+        .description('Set FixVersion of an issue to <version>.')
+        .option('-a, --append', 'Append fix instead of over-write')
+        .action(function(issue, version, options) {
+            auth.setConfig(function(auth) {
+                if (auth) {
+                    if (options.append) {
+                        fix.append(issue, version);
+                    } else {
+                        fix.to(issue, version);
+                    }
+                }
+            });
+        });
+
+    program
+        .command('release <version>')
+        .description('Create a FixVersion/Release (see release -h for more details)')
+        .option('-p, --project <name>', 'Project', String)
+        .option('-d, --description <name>', 'Description', String)
+        .option('-r, --released', 'Set released to true - default is false')
+        .action(function(version, options) {
+            auth.setConfig(function(auth) {
+                if (auth) {
+                    release.create(version, options);
+                }
+            });
+        });
+
+    program
+        .command('send')
+        .description('Send email report (see send -h for more details)')
+        .option('-i, --projectId <id>', 'Project ID', String)
+        .option('-p, --project_prefix <XX>', 'Project Prefix', String)
+        .option('-v, --version <number>', 'Version ID Number', String)
+        .option('-n, --name <name>', 'release name', String)
+        .option('-f, --from <name>', 'from name', String)
+        .option('-t, --to <name>', 'recipient email', String)
+        .option('-s, --subject <name>', 'email subject', String)
+        .option('-x, --password <password>', 'email password', String)
+        .option('-e, --template <file>', 'email template', String)
+        .action(function(options) {
+            auth.setConfig(function(auth) {
+                if (auth) {
+                    send.send(options);
                 }
             });
         });
@@ -402,7 +470,7 @@ requirejs([
     program.parse(process.argv);
 
     if (program.args.length === 0) {
-        auth.setConfig(function (auth) {
+        auth.setConfig(function(auth) {
             if (auth) {
                 program.help();
             }

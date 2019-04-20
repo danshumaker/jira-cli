@@ -20,9 +20,13 @@
   "dependencies": {
     "alasql": "^0.4.5",
     "async": "^2.6.0",
+    "cheerio": "^1.0.0-rc.3",
     "cli-table": "^0.2.0",
     "commander": "~1.1.1",
     "dargs": "^5.1.0",
+    "fs": "0.0.1-security",
+    "gmail-sender": "^0.1.2",
+    "jslint": "^0.12.1",
     "moment": "^2.10.2",
     "openurl": "^1.1.0",
     "qs": "~> 1.0.0",

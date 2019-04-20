@@ -2,22 +2,24 @@ jira-cmd
 ========
 
 [![NPM Version](https://badge.fury.io/js/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
-[![Build Status](https://api.travis-ci.org/germanrcuriel/jira-cmd.svg?branch=master)](https://travis-ci.org/germanrcuriel/jira-cmd)
 [![Package downloads](http://img.shields.io/npm/dm/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
 
+A Jira command line interface
 
-A Jira command line interface based on [jilla](https://github.com/godmodelabs/jilla).
+Features:
+  * Show issues assigned to you.
+  * Show issues corresponding to custom JQL
+  * Use jql shortcuts
+  * Create an issue
+  * Create an issue from a template
+  * Show sprint information
+  * Add an issue to a sprint
+  * Add multiple issues to a sprint in one command
+  * Use user shortcuts/aliases
+  * Create releases
+  * Send release reports via gmail
+  * Assign fix version to an issue
 
-Its got tons of functionalities
-  * showing all jira assigned to you
-  * show all jira corresponding to custom JQL
-  * showing all jira with shortcut to custom JQL saved in config
-  * creating new jira
-  * creating new jira with shortcut that picks the default values for fields configured in config
-  * showing sprint details and sprint id for boards
-  * adding an issue to sprint 
-  * adding multiple issues to a sprint in one go
-  * ability to use username alias shortcuts for commenting,assigning and adding watchers. It helps to not remember the usernames, just save their shortcuts in config.
 ## Installation
 
 Install [node.js](http://nodejs.org/).
@@ -35,10 +37,11 @@ Then, in your shell type:
     Password: xxxxxx
     Information stored!
 
-This save your credentials (base64 encoded) in your `$HOME/.jira` folder.
+This save your credentials (base64 encoded), and a default working configuration file in your current working directory+ `/.jira-cmd`.
+
+You can also set an environment variable called `JIRA_CONFIG=/path/to/your/file/config.json`  which the script will use instead of the default current diretory.
 
 ##### Help
-
 
   Usage: jira.js [options] [command]
 
@@ -49,9 +52,12 @@ This save your credentials (base64 encoded) in your `$HOME/.jira` folder.
     stop <issue>           Stop working on an issue.
     review <issue> [assignee] Mark issue as being reviewed [by assignee(optional)].
     done [options] <issue> Mark issue as finished.
+    invalid <issue>        Mark issue as finished.
+    mark <issue>           Mark issue as.
+    edit <issue> [input]   edit issue.
     running                List issues in progress.
-    jql [options] <query>  Run JQL query
-    link <from> <to>       link issues
+    jql [options] [query]  Run JQL query
+    link <from> <to> [link_value] link issues
     search <term>          Find issues.
     assign <issue> [user]  Assign an issue to <user>. Provide only issue# to assign to me
     watch <issue> [user]   Watch an issue to <user>. Provide only issue# to watch to me
@@ -60,23 +66,31 @@ This save your credentials (base64 encoded) in your `$HOME/.jira` folder.
     open <issue>           Open an issue in a browser
     worklog <issue>        Show worklog about an issue
     worklogadd [options] <issue> <timeSpent> [comment] Log work for an issue
-    create [project[-issue]] Create an issue or a sub-task
+    create [options] [project[-issue]] Create an issue or a sub-task
+    new [options] [key]    Create an issue or a sub-task
     config [options]       Change configuration
     sprint [options]       Works with sprint boards
-    With no arguments, displays all rapid boards
-    With -r argument, attempt to find a single rapid board and display its active sprints
-    With both -r and -s arguments attempt to get a single rapidboard/ sprint and show its issues. If a single sprint board isnt found, show all matching sprint boards
+                                With no arguments, displays all rapid boards
+                                With -r argument, attempt to find a single rapid board
+                                and display its active sprints
+                                With both -r and -s arguments
+                                attempt to get a single rapidboard/ sprint and show its issues. If
+                                a single sprint board isnt found, show all matching sprint boards
+
+    fix [options] <issue> <version> Set FixVersion of an issue to <version>.
+    release [options] <version> Create a FixVersion/Release (see release -h for more details)
+    send [options]         Send email report (see send -h for more details)
 
   Options:
 
     -h, --help     output usage information
     -V, --version  output the version number
 
-### Using Create
-	
+### Create a jira issue
+
 	Usage: create [options] [project[-issue]]
 		Options:
-	
+
 		-h, --help                      output usage information
 		-p, --project <project>         Rapid board on which project is to be created
 		-P, --priority <priority>       priority of the issue
@@ -87,11 +101,11 @@ This save your credentials (base64 encoded) in your `$HOME/.jira` folder.
 		-a --assignee <assignee>        Issue assignee
 
 
-### Using jira new functionality
+### Using jira issue templates
 #### What does jira new offers
   * if you make issues very frequently then you can save multiple templates of default values with a key to call with in ~/jira/config.json . then you just have to do <kbd>jira new KEY1</kbd>
-	* 
-	  
+	*
+
 ``` json
     "default_create" : {
 	<!-- fields which you want to prompt every time  -->
@@ -119,24 +133,26 @@ This save your credentials (base64 encoded) in your `$HOME/.jira` folder.
 			<!-- , so when creating new jira with this template-->
 			<!-- every iissue would have username prakhar in cc-->
 			"customfield_10901": [{ <!-- how to give usernames -->
-				"name": "prakhar"	
+				"name": "prakhar"
 			}]
 	    },
 	"quick" : { <!-- another template shortcut -->
-	
+
 		},
 	"SOME_ALIAS" :{ <!-- yet another template shortcut -->
-	
+
 		}
 	},
 }
 ```
-  * Now there are 2 portions of `default_create` config 
+  * Now there are 2 portions of `default_create` config
 	*  `__always_ask` : it contains the fields which would always be prompted when you create an issue. For eg. in above given json , whenever we'll create a new issue , description and priority would always be asked along with other mandatory fields for the board.
 	*  Rest of the keys in `default_create` are the shortcut keys which you will refer to while calling <kbd>jira new key</kbd>
 
-### Using jira edit functionality
+### Edit a Jira issue:
+
 This jira edit functionality is in beta phase and only few type of fields are allowed to be edited. **currently only items of type strings  are supported**
+
   * <kbd>jira edit JRA-254</kbd>
 	``` json
   (0) Summary
@@ -164,11 +180,11 @@ This jira edit functionality is in beta phase and only few type of fields are al
 
 	```
 
-  * to edit jira in non interactive mode, giving field to be edited and its values is possible. 
+  * to edit jira in non interactive mode, giving field to be edited and its values is possible.
 	* you first  need to find the actual name of the field you want to edit. For this you can use the following url <https://YOUR__JIRA__ENDPOINT/rest/api/2/issue/JRA-546/editmeta> **replace JRA-546 with the issue/type of issues you want to edit**. Its sample output is given below
 
-	```		
-  fields{	
+	```
+  fields{
 	  summary	{…}
 	  issuetype	{…}
 	  components	{…}
@@ -199,9 +215,9 @@ This jira edit functionality is in beta phase and only few type of fields are al
 	  assignee	{…}
     }
 	```
-  * 
+  *
  <kbd>jira edit JRA-254 "FIELD_NAME::FIELDVALUES"</kbd>
-	 * Fieldnames can be hard to remember when using on command line, so you can save these field names in `~/.jira/config.json` . Suppose the response of edit meta is 
+	 * Fieldnames can be hard to remember when using on command line, so you can save these field names in `~/.jira/config.json` . Suppose the response of edit meta is
 
 	``` json
 	 fields	{
@@ -268,9 +284,9 @@ This jira edit functionality is in beta phase and only few type of fields are al
 		comment	{…}
 		assignee	{…}
 	}
-	
+
 	```
-	 
+
   * In above meta priority corresponds to CC field. So settign its default value in config.json would be
 
   ``` json
@@ -303,9 +319,9 @@ This jira edit functionality is in beta phase and only few type of fields are al
 		* <kbd>key</kbd> : actual key to which call is made to edit
 		* <kbd>default</kbd> : if input value is not given corresponding to a key , for eg.  <kbd>jira edit JRA-354 `alias_for_label`</kbd> , then it picks this default key from config.json as though the input was given from commandline. It would act as if the command issued was <kbd>jira edit JRA-354 "`alias_for_label`::t1,t2"</kbd>
   * **remember that enties in <kbd>__default</kbd> should be of form <kbd>alias: {...actual json.. }</kbd>**
-  
+
 ### Jira mark functionality to mark a jira as done,blocked, invalid etc <kbd>jira mark JRA-123</kbd>
-There are multiple other jira transitions beside done,invalid,start,stop etc which are directly supported as <kbd>jira done JRA-123</kbd> or <kbd>jira invalid JRA-786</kbd> etc. 
+There are multiple other jira transitions beside done,invalid,start,stop etc which are directly supported as <kbd>jira done JRA-123</kbd> or <kbd>jira invalid JRA-786</kbd> etc.
   * Sometimes some jira do not change transition into these states directly due to defined workflow. They can go into certain states only from current state. In these cases or in general you can use **jira mark** functionality. It works as follows <kbd>jira mark CART-2047</kbd>
 
 	``` json
@@ -319,7 +335,7 @@ There are multiple other jira transitions beside done,invalid,start,stop etc whi
 	(301) Other tech team issue
 	(241) Reopen
 	Enter transition 251
-		
+
 	```
   * Above mentioned input would mark the task JRA-2047 as duplicate.
 #### How to know the fields metadata for a project/rapidboard
@@ -333,16 +349,16 @@ There are multiple other jira transitions beside done,invalid,start,stop etc whi
 	* <https://docs.atlassian.com/jira/REST/server/?_ga=2.55654315.1871534859.1501779326-1034760119.1468908320#api/2/issueLink-linkIssues>
 	*  <https://developer.atlassian.com/jiradev/jira-apis/about-the-jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-examples#JIRARESTAPIexamples-Creatinganissueusingcustomfields>
   *  If you are not able to create a template
- 
 
-### Using Jira JQL
+
+### Submit custom JQL to jira
 
   *	get issues for jql eg. <kbd>jira jql "YOUR_JQL_OR_JQL_SHORTCUT"</kbd> when using a particular jql frequently , you can save that jql in **~/.jira/config.json**,an example jql is saved there with key reported
   * eg .  jira jql reported would run the jql written against reported key [saved by default ] in ~/.jira/config.json
 
         Usage: jql [options] [query]
         	Options:
-          
+
             -h, --help           output usage information
             -c, --custom <name>  Filter by custom jql saved in jira config
 
@@ -352,10 +368,10 @@ There are multiple other jira transitions beside done,invalid,start,stop etc whi
   * get issues tagged in a sprint eg. <kbd>jira sprint -r YOUR_RAPIDBOARD -s STRING_TO_SEARCH_IN_SPRINT_NAME</kbd>
   * tag an issue in a sprint eg. <kbd>jira sprint -a YOUR_ISSUE_KEY -i YOUR_SPRINT_ID</kbd>
   * tag multiple issues from JQL to a sprint . Eg. <kbd>jira sprint -j YOUR_JQL_OR_JQL_SHORTCUT -i YOUR_SPRINT_ID</kbd>
-  
+
 Usage: sprint [options]
 
-	Options:	
+	Options:
     -h, --help                  output usage information
     -r, --rapidboard <name>     Rapidboard to show sprints for
     -s, --sprint <name>         Sprint to show the issues
@@ -364,7 +380,7 @@ Usage: sprint [options]
     -j, --jql <jql>             Id of the sprint
   * Suppose you want to move all of your pending issues which are present in previous sprint and not marked done . Given that `customfield_10007` corresponds to sprint. following <kbd>jira jql -c "cf[10007]=1787 and assignee=aman6.jain and status not in ('invalid','done')"</kbd> gives the issues which are not done in sprint with id 1787 . now you can use this jql to mark them moved to new sprint as <kbd>jira sprint -i 1890 -j "cf[10007]=1787 and assignee=aman6.jain and status not in ('invalid','done')"</kbd> . And all issues would move to sprint with id 1890.
 ### searching issues
-if you want to search a text in all the issues 
+if you want to search a text in all the issues
   * **using jira search** <kbd>jira jql search SEARCH_TERM</kbd>
   * **using jira jql [recommended]** <kbd>jira jql "summary ~ SEARCH_TERM OR description ~ SEARCH_TERM"</kbd>
 
@@ -385,7 +401,7 @@ if you want to search a text in all the issues
 	```
 	* now you can use the nickname in following commands
 	  * **to add watchers** <kbd>jira watch MPP-948 nickname1</kbd>
-	  * **to tag some one in comment** <kbd>jira comment MPP-948 "[~nickname2] you are tagged in this comment"</kbd> 
+	  * **to tag some one in comment** <kbd>jira comment MPP-948 "[~nickname2] you are tagged in this comment"</kbd>
       * **assigning an issue to someone using nickname** <kbd>jira assign MPP-948 nickname1</kbd> would assign MPP-948 to nickname1 user.
 
 
@@ -395,10 +411,10 @@ if you want to search a text in all the issues
       * under their avatar/photo is a field called **Username**
       * this is the user's username which you should use.
 
-### Explaining ~/.jira/config.json
+### Explaining .jira-cmd/config.json
   * **auth** : here the basic authentication information is stored. You would need to change it if url of your jira is changed.
 	* example block
-	
+
 	``` json
 		"auth": {
 			"token": "AUTO_GENERATED_TOKEN_FROM_PASSWORD",
@@ -406,12 +422,12 @@ if you want to search a text in all the issues
 			"user": "YOUR_JIRA_EMAIL"
 		}
 	```
-	
+
 	* mostly you wont need to touch this block, only when your username or password changes then you'll have to reconfigure it using jira config command.
 
-  * **custom_jql**:  here you will store the jql to get the type of issues you frequently want to see and monitor in single command. eg. jira jql reported would give the issues corresponding to jql saved against reported key in custom_jql by default. 
+  * **custom_jql**:  here you will store the jql to get the type of issues you frequently want to see and monitor in single command. eg. jira jql reported would give the issues corresponding to jql saved against reported key in custom_jql by default.
 	* example block
-	
+
 	``` json
 		"custom_jql": {
 			"mpp": "project=MPP and status !=done",
@@ -430,7 +446,7 @@ if you want to search a text in all the issues
 Each command have individual usage help (using --help or -h)
 
 ##### Advanced options
-Checkout ```~/.jira/config.json``` for more options.
+Checkout ```.jira-cmd/config.json``` for more options.
 
 ## MIT License
 
