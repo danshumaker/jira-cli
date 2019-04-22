@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 var requirejs = require('requirejs');
-// https://docs.atlassian.com/jira/REST/server/?_ga=2.55654315.1871534859.1501779326-1034760119.1468908320#api/2/issueLink-linkIssues
-// https://developer.atlassian.com/jiradev/jira-apis/about-the-jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-examples#JIRARESTAPIexamples-Creatinganissueusingcustomfields
-// required fields https://jira.mypaytm.com/rest/api/2/issue/createmeta?projectKeys=MDO&expand=projects.issuetypes.fields&
-//http://localhost:8080/rest/api/2/issue/JRA-13/editmeta
+
+// API Documenation Links:
+// Creating Issues: https://developer.atlassian.com/jiradev/jira-apis/about-the-jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-examples#JIRARESTAPIexamples-Creatinganissueusingcustomfields
+// Issue Links    : https://docs.atlassian.com/jira/REST/server/?_ga=2.55654315.1871534859.1501779326-1034760119.1468908320#api/2/issueLink-linkIssues
+// Required Fields: https://jira.mypaytm.com/rest/api/2/issue/createmeta?projectKeys=MDO&expand=projects.issuetypes.fields&
+// Meta-data      : http://localhost:8080/rest/api/2/issue/JRA-13/editmeta
 
 requirejs.config({
     baseUrl: __dirname
@@ -119,7 +121,7 @@ requirejs([
         .action(function(issue) {
             auth.setConfig(function(auth) {
                 if (auth) {
-                    transitions.invalid(issue);
+                    transitions.invalid(issue,options);
                 }
             });
         });
@@ -326,7 +328,7 @@ requirejs([
         .option('-P, --priority <priority>', 'priority of the issue', String)
         .option('-T --type <type>', 'Issue type', String)
         .option('-s --subtask <subtask>', 'Issue subtask', String)
-        .option('-t --title <title>', 'Issue title', String)
+        .option('-S --summary <summary>', 'Issue Summary', String)
         .option('-d --description <description>', 'Issue description', String)
         .option('-a --assignee <assignee>', 'Issue assignee', String)
         .action(function(projIssue, options) {
@@ -344,9 +346,12 @@ requirejs([
         .option('-P, --priority <priority>', 'priority of the issue', String)
         .option('-T --type <type>', 'Issue type', String)
         .option('-s --subtask <subtask>', 'Issue subtask', String)
-        .option('-t --title <title>', 'Issue title', String)
+        .option('-S --summary <summary>', 'Issue summary', String)
         .option('-d --description <description>', 'Issue description', String)
+        .option('-c --component <component>', 'Issue component', String)
+        .option('-l --label <label>', 'Issue label', String)
         .option('-a --assignee <assignee>', 'Issue assignee', String)
+        .option('-v --verbose', 'Verbose debugging output')
         .action(function(key, options) {
             auth.setConfig(function(auth) {
                 if (auth) {
@@ -360,23 +365,13 @@ requirejs([
         .command('config')
         .description('Change configuration')
         .option('-c, --clear', 'Clear stored configuration')
+        .option('-t, --template', 'Start config with this given template', String)
+        .option('-v, --verbose', 'verbose debugging output')
         .action(function(options) {
             if (options.clear) {
                 auth.clearConfig();
             } else {
-                auth.setConfig(function(auth) {
-                    if (auth) {
-                        if (options.auth) {
-                            console.log("url :" + config.auth.url);
-                            console.log("user:" + config.auth.user);
-                        }
-                        if (options.url) {
-                            console.log(config.auth.url);
-                        }
-                    } else {
-                        auth.setConfig();
-                    }
-                });
+                auth.setConfig(options);
             }
         }).on('--help', function() {
             console.log('  Config Help:');
