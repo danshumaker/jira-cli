@@ -49,16 +49,17 @@ requirejs([
         .description('List my issues')
         .option('-p, --project <name>', 'Filter by project', String)
         .option('-t, --type <name>', 'Filter by type', String)
+        .option('-v, --verbose', 'verbose output')
         .action(function(options) {
-            auth.setConfig(function(auth) {
-                if (auth) {
-                    if (options.project) {
-                        ls.showByProject(options.project, options.type, finalCb);
-                    } else {
-                        ls.showAll(options.type, finalCb);
-                    }
+            if (auth.checkConfig()) {
+                if (options.project) {
+                    ls.showByProject(options, finalCb);
+                } else {
+                    ls.showAll(options, finalCb);
                 }
-            });
+            } else {
+              console.log("Config not setup yet");
+            }
         });
 
     program
@@ -121,7 +122,7 @@ requirejs([
         .action(function(issue) {
             auth.setConfig(function(auth) {
                 if (auth) {
-                    transitions.invalid(issue,options);
+                    transitions.invalid(issue, options);
                 }
             });
         });
@@ -365,7 +366,7 @@ requirejs([
         .command('config')
         .description('Change configuration')
         .option('-c, --clear', 'Clear stored configuration')
-        .option('-t, --template', 'Start config with this given template', String)
+        .option('-t, --template <template>', 'Start config with this given template', String)
         .option('-v, --verbose', 'verbose debugging output')
         .action(function(options) {
             if (options.clear) {
