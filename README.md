@@ -8,10 +8,12 @@ A Jira command line interface
 
 Features:
   * Show issues assigned to you.
-  * Show issues corresponding to custom JQL
+  * Execute custom JQL
   * Use jql shortcuts
   * Create an issue
   * Create an issue from a template
+  * Configure project specific issue transitions
+  * Use project specific default config files -helps other developers get up to speed faster on a project
   * Show sprint information
   * Add an issue to a sprint
   * Add multiple issues to a sprint in one command
@@ -28,21 +30,36 @@ Then, in your shell type:
 
     $ npm install -g cmd-jira
 
-## Usage
-##### First use
-
-    $ jira
-    Jira URL: https://jira.atlassian.com/
-    Username: xxxxxx
-    Password: xxxxxx
-    Information stored!
-
-This save your credentials (base64 encoded), and a default working configuration file in your current working directory+ `/.jira-cmd`.
-
-You can also set an environment variable called `JIRA_CONFIG=/path/to/your/file/config.json`  which the script will use instead of the default current diretory.
-
 ##### Help
 
+  Many of the commands have "sub" helps to them so if you supply the -h with the command you will see a more complete help than what is printed by the global help below.
+  For example:
+
+  ```
+    $ jira config -h
+
+      Usage: config [options]
+
+      Options:
+
+        -h, --help                 output usage information
+        -c, --clear                Clear stored configuration
+        -t, --template <template>  Start config with this given template
+        -v, --verbose              verbose debugging output
+
+      Config Help:
+
+        Jira URL: https://foo.atlassian.net/
+        Username: user (for user@foo.bar)
+        Password: Your password
+
+      WARNING:After three failed login attempts Atlassian forces a CAPTCHA login
+      WARNING:  which can only be done via the browser.
+    ```
+
+  The general help is: `jira -h`
+
+  ```
   Usage: jira.js [options] [command]
 
   Commands:
@@ -81,10 +98,40 @@ You can also set an environment variable called `JIRA_CONFIG=/path/to/your/file/
     release [options] <version> Create a FixVersion/Release (see release -h for more details)
     send [options]         Send email report (see send -h for more details)
 
-  Options:
+    Options:
 
     -h, --help     output usage information
     -V, --version  output the version number
+
+    ```
+
+
+## Configuration Setup (Do this first)
+
+    ```
+    $ jira config
+    Jira URL: https://jira.atlassian.com/
+    Username: xxxxxx
+    Password: xxxxxx
+    Information stored!
+    ```
+
+  This saves your credentials (base64 encoded), and a default working configuration file in your current working directory+ `/.jira-cmd`.
+
+  You can also set an environment variable called `JIRA_CONFIG=/path/to/your/file/config.json`  which the script will use instead of the default current diretory.
+
+## Configuration Templates
+
+By default the script uses a default configuration that needs to be adjusted to your workflows, issue transitions, and project names.  However, if another developer has preconfigured
+a config file you can use that file as your starting point so your configuration is all setup except for your url, username and password.  Do this with the -t  option.
+
+  ```
+  $ jira config -t /some/network/path/my_awesome_project_setup_for_me.json
+    Jira URL: https://jira.atlassian.com/
+    Username: xxxxxx
+    Password: xxxxxx
+    Information stored!
+  ```
 
 ### Create a jira issue
 
