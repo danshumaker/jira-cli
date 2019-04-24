@@ -1,27 +1,29 @@
-jira-cmd
+jira-cli
 ========
 
-[![NPM Version](https://badge.fury.io/js/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
-[![Package downloads](http://img.shields.io/npm/dm/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
+[![NPM Version](https://badge.fury.io/js/jira-cli.svg)](https://npmjs.org/package/jira-cli)
+[![Package downloads](http://img.shields.io/npm/dm/jira-cli.svg)](https://npmjs.org/package/jira-cli)
 [Jira API Reference](https://docs.atlassian.com/software/jira/docs/api/REST/8.1.0/)
 
-A Jira command line interface
+A Jira command line interface (forked from https://github.com/germanrcuriel/jira-cmd )
 
-Features:
+- Tested Features: (see bin/tests.sh --these all work)
   * Show issues assigned to you.
   * Execute custom JQL
-  * Use jql shortcuts
   * Create an issue
   * Create an issue from a template
   * Configure project specific issue transitions
   * Use project specific default config files -helps other developers get up to speed faster on a project
+  * Create releases
+  * Send release reports via gmail
+  * Assign fix version to an issue
+
+- TODO - Untested Features:
+  * Use jql shortcuts
   * Show sprint information
   * Add an issue to a sprint
   * Add multiple issues to a sprint in one command
   * Use user shortcuts/aliases
-  * Create releases
-  * Send release reports via gmail
-  * Assign fix version to an issue
 
 ## Installation
 
@@ -29,7 +31,7 @@ Install [node.js](http://nodejs.org/).
 
 Then, in your shell type:
 
-    $ npm install -g cmd-jira
+    $ npm install -g jira-cli
 
 ##### Help
 
@@ -106,7 +108,6 @@ Then, in your shell type:
 
     ```
 
-
 ## Configuration Setup (Do this first)
 
     ```
@@ -117,7 +118,7 @@ Then, in your shell type:
     Information stored!
     ```
 
-  This saves your credentials (base64 encoded), and a default working configuration file in your current working directory+ `/.jira-cmd`.
+  This saves your credentials (base64 encoded), and a default working configuration file in your current working directory+ `/.jira-cli`.
 
   You can also set an environment variable called `JIRA_CONFIG=/path/to/your/file/config.json`  which the script will use instead of the default current diretory.
 
@@ -434,9 +435,9 @@ if you want to search a text in all the issues
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-### how to use username alias/nicknames with cmd-jira
+### how to use username alias/nicknames with jira-cli
   * [find users username](###finding-username)
-  * save the username alias/nickname in user_alias block of  ~/.jira/config.json .
+  * save the username alias/nickname in user_alias block of  .jira-cli/config.json .
 	* for eg. if username  is palashkulsh@gmail.com and you choose nickname as palash then your user_alias map would look like
 
 	``` json
@@ -459,7 +460,7 @@ if you want to search a text in all the issues
       * under their avatar/photo is a field called **Username**
       * this is the user's username which you should use.
 
-### Explaining .jira-cmd/config.json
+### Explaining .jira-cli/config.json
   * **auth** : here the basic authentication information is stored. You would need to change it if url of your jira is changed.
 	* example block
 
@@ -494,7 +495,7 @@ if you want to search a text in all the issues
 Each command have individual usage help (using --help or -h)
 
 ##### Advanced options
-Checkout ```.jira-cmd/config.json``` for more options.
+Checkout ```.jira-cli/config.json``` for more options.
 
 ## MIT License
 
