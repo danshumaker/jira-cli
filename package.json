@@ -2,7 +2,7 @@
   "name": "jira-cli",
   "description": "A JIRA Command Line Interface",
   "version": "1.0.0",
-  "author": "Dan Shumaker <danpshumaker@gmail.com>",
+  "author": "Dan Shumaker <danpshumaker@gmail.com> (https://danshumaker.github.io/)",
   "contributors": [ ],
   "scripts": {
     "test": "bin/tests.sh && exit 1",

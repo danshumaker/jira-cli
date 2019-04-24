@@ -1,5 +1,6 @@
 MIT License
 
+Copyright (c) 2019 Dan Shumaker
 Copyright (c) 2017 Germán Robledo
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
