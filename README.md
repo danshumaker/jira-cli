@@ -3,6 +3,7 @@ jira-cmd
 
 [![NPM Version](https://badge.fury.io/js/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
 [![Package downloads](http://img.shields.io/npm/dm/jira-cmd.svg)](https://npmjs.org/package/jira-cmd)
+[Jira API Reference](https://docs.atlassian.com/software/jira/docs/api/REST/8.1.0/)
 
 A Jira command line interface
 
