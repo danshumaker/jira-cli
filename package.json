@@ -33,7 +33,8 @@
     "client",
     "command",
     "cli",
-    "tool"
+    "tool",
+    "command-line-junky"
   ],
   "license": "MIT",
   "repository": {

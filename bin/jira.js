@@ -45,7 +45,7 @@ requirejs([
     }
 
     program
-        .version('v1.0.0');
+        .version('v1.0.1');
 
     program
         .command('ls')
@@ -284,13 +284,18 @@ requirejs([
         .command('config')
         .description('Change configuration')
         .option('-c, --clear', 'Clear stored configuration')
+        .option('-u, --url', 'Print url in config')
         .option('-t, --template <template>', 'Start config with this given template', String)
         .option('-v, --verbose', 'verbose debugging output')
         .action(function(options) {
             if (options.clear) {
                 auth.clearConfig();
             } else {
-                auth.setup(options);
+                if (options.url) {
+                  console.log(config.auth.url);
+                } else {
+                  auth.setup(options);
+                }
             }
         }).on('--help', function() {
             console.log('  Config Help:');
