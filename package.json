@@ -16,13 +16,14 @@
     "commander": "~1.1.1",
     "dargs": "^5.1.0",
     "fs": "0.0.1-security",
-    "gmail-sender": "^0.1.2",
     "jslint": "^0.12.1",
     "moment": "^2.10.2",
+    "nodemailer": "^6.3.0",
     "openurl": "^1.1.0",
     "qs": "~> 1.0.0",
     "requirejs": "~2.1.5",
-    "superagent": "~0.13.0"
+    "superagent": "~0.13.0",
+    "underscore": "^1.9.1"
   },
   "engines": {
     "node": ">= 0.8"
