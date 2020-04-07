@@ -45,7 +45,7 @@ requirejs([
     }
 
     program
-        .version('v1.0.1');
+        .version('v1.0.2');
 
     program
         .command('ls')
@@ -159,7 +159,7 @@ requirejs([
 
 
     program
-        .command('assign <issue> [user]')
+        .command('assign <issue> [accountId]')
         .description('Assign an issue to <user>. Provide only issue# to assign to me')
         .action(function(issue, user) {
             if (user) {
