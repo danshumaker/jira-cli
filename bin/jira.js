@@ -45,7 +45,7 @@ requirejs([
     }
 
     program
-        .version('v1.4.1');
+        .version('v1.5.0');
 
     program
         .command('ls')
