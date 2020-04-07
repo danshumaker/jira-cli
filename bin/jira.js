@@ -130,11 +130,12 @@ requirejs([
         });
 
     program
-        .command('jql [query]')
+        .command('jql <query>')
         .description('Run JQL query')
         .option('-c, --custom <name>', 'Filter by custom jql saved in jira config', String)
         .option('-s, --custom_sql <name>', 'Filter by custom alasql saved in jira config', String)
         .option('-j, --json <value>', 'Output in json', String, 0)
+        .option('-v, --verbose', 'verbose output')
         .action(function(query, options) {
             if (options.custom_sql) {
                 ls.aggregateResults(query, options, finalCb);
