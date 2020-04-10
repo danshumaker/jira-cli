@@ -6,7 +6,13 @@
   "contributors": [],
   "scripts": {
     "test": "bin/tests.sh && exit 1",
-    "patch-release": "npm version patch && npm publish && git push --follow-tags"
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
+    "start": "npm run global",
+    "dev": "mode='debug' node bin/jira.js",
+    "global": "npm i -g && jira",
+    "clean": "rm -rf ./.jira-cli",
+    "clean:global": "rm -rf ~/.jira-cli"
+
   },
   "dependencies": {
     "alasql": "^0.4.11",
@@ -20,6 +26,7 @@
     "moment": "^2.24.0",
     "nodemailer": "^6.4.6",
     "openurl": "^1.1.0",
+    "os": "^0.1.1",
     "qs": "~> 1.0.0",
     "requirejs": "~2.1.5",
     "superagent": "~3.7.0",
