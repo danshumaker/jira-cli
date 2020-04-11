@@ -290,7 +290,6 @@ requirejs([
         .option('-v, --verbose', 'verbose debugging output')
         .action(function(options) {
             if (options.clear) {
-                console.log("clearrrrr");
                 auth.clearConfig();
             } else {
                 if (options.url) {
