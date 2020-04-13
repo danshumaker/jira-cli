@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+//const version = require('package').version
 var requirejs = require('requirejs');
 
 // API Documenation Links:
@@ -34,8 +34,9 @@ requirejs([
     '../lib/jira/watch',
     '../lib/jira/add_to_sprint',
     '../lib/jira/new',
-    '../lib/jira/edit'
-], function(program, config, auth, ls, describe, assign, fix, release, send, comment, create, sprint, transitions, worklog, link, watch, add_to_sprint, new_create, edit) {
+    '../lib/jira/edit',
+    '../../../package.json'
+], function(program, config, auth, ls, describe, assign, fix, release, send, comment, create, sprint, transitions, worklog, link, watch, add_to_sprint, new_create, edit, packageJson) {
 
     function finalCb(err) {
         if (err) {
@@ -43,9 +44,8 @@ requirejs([
         }
         process.exit(1);
     }
-
     program
-        .version('v1.5.1');
+        .version(packageJson.version);
 
     program
         .command('ls')
