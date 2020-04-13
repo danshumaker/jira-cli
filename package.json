@@ -21,7 +21,6 @@
     "commander": "~1.1.1",
     "dargs": "^5.1.0",
     "fs": "0.0.1-security",
-    "jslint": "^0.12.1",
     "moment": "^2.24.0",
     "nodemailer": "^6.4.6",
     "openurl": "^1.1.0",
@@ -51,6 +50,7 @@
     "jira": "./bin/jira.js"
   },
   "devDependencies": {
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "jslint": "^0.12.1"
   }
 }
