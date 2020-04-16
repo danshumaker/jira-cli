@@ -5,7 +5,7 @@
   "author": "Dan Shumaker <danpshumaker@gmail.com> (https://danshumaker.github.io/)",
   "contributors": [],
   "scripts": {
-    "test": "ava",
+    "test": "jest",
     "test:e2e": "bin/tests.sh && exit 1",
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
     "start": "npm run global",
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "ava": "^3.7.0",
+    "jest": "^25.3.0",
     "jslint": "^0.12.1",
     "rimraf": "^3.0.2",
     "testr": "0.0.5"
