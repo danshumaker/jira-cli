@@ -164,7 +164,7 @@ requirejs([
         .description('Assign an issue to <user>. Provide only issue# to assign to me')
         .action(function(issue, user) {
             if (user) {
-                user = config.user_alias[user];
+                user = config.user_alias[user] || user;
                 assign.to(issue, user);
             } else {
                 assign.me(issue);
