@@ -115,14 +115,16 @@ module.exports = function () {
   program.command('search <term>').description('Find issues.').action(function (query) {
     ls.search(query, finalCb);
   });
-  program.command('assign <issue> [accountId]').description('Assign an issue to <user>. Provide only issue# to assign to me').action(function (issue, user) {
-    if (user) {
-      user = config.user_alias[user];
-      assign.to(issue, user);
-    } else {
-      assign.me(issue);
-    }
-  });
+  program.command('assign <issue> [accountId]')
+    .description('Assign an issue to <user>. Provide only issue# to assign to me')
+    .action(function (issue, user) {
+      if (user) {
+        user = config.user_alias[user] || user
+        assign.to(issue, user)
+      } else {
+        assign.me(issue)
+      }
+    })
   program.command('watch <issue> [user]').description('Watch an issue to <user>. Provide only issue# to watch to me').action(function (issue, user) {
     if (user) {
       user = config.user_alias[user];
