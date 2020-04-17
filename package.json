@@ -8,11 +8,12 @@
     "test": "jest",
     "test:e2e": "bin/tests.sh && exit 1",
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
-    "start": "npm run global",
     "dev": "node bin/jira.js",
-    "global": "npm i -g && jira",
-    "clean": "rimraf -rf ./.jira-cli",
-    "clean:global": "rimraf -rf ~/.jira-cli && npm uninstall jira-cli -g"
+    "install": "npm i -g",
+    "clean:dev": "rimraf -rf ./.jira-cli",
+    "clean": "rimraf -rf ~/.jira-cli && npm uninstall jira-cli -g",
+    "lint": "eslint . --ext .js,.ts --ignore-path .gitignore",
+    "fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "alasql": "^0.4.11",
@@ -56,9 +57,9 @@
   },
   "devDependencies": {
     "ava": "^3.7.0",
+    "eslint": "^6.8.0",
     "husky": "^4.2.5",
     "jest": "^25.3.0",
-    "jslint": "^0.12.1",
     "rimraf": "^3.0.2",
     "testr": "0.0.5"
   }
