@@ -12,7 +12,7 @@
     "dev": "node bin/jira.js",
     "global": "npm i -g && jira",
     "clean": "rimraf -rf ./.jira-cli",
-    "clean:global": "rm -rf ~/.jira-cli"
+    "clean:global": "rimraf -rf ~/.jira-cli && npm uninstall jira-cli -g"
   },
   "dependencies": {
     "alasql": "^0.4.11",
@@ -26,7 +26,6 @@
     "nodemailer": "^6.4.6",
     "openurl": "^1.1.0",
     "qs": "~> 1.0.0",
-    "requirejs": "~2.1.5",
     "superagent": "~3.7.0",
     "underscore": "^1.10.2"
   },
