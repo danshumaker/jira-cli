@@ -49,8 +49,14 @@
   "bin": {
     "jira": "./bin/jira.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  },
   "devDependencies": {
     "ava": "^3.7.0",
+    "husky": "^4.2.5",
     "jest": "^25.3.0",
     "jslint": "^0.12.1",
     "rimraf": "^3.0.2",
