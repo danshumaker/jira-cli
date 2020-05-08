@@ -48,14 +48,6 @@ const pkg = require('../package.json');
 const CreateIssue = require('../lib/jira/create');
 const JiraClient = require('jira-connector');
 
-const jira = new JiraClient({
-  host: config.authNew.host,
-  // eslint-disable-next-line camelcase
-  basic_auth: {
-    base64: config.authNew.token
-  }
-});
-
 function finalCb (err) {
   if (err) {
     console.log(err.toString());
@@ -183,8 +175,17 @@ program.command('worklogadd <issue> <timeSpent> [comment]').description('Log wor
   console.log();
 });
 program.command('create [project[-issue]]').description('Create an issue or a sub-task').option('-p, --project <project>', 'Rapid board on which project is to be created', String).option('-P, --priority <priority>', 'priority of the issue', String).option('-T --type <type>', 'NUMERIC Issue type', parseInt).option('-s --subtask <subtask>', 'Issue subtask', String).option('-S --summary <summary>', 'Issue Summary', String).option('-d --description <description>', 'Issue description', String).option('-a --assignee <assignee>', 'Issue assignee', String).option('-v --verbose', 'Verbose debugging output').action(function (project, options) {
-  const _create = new CreateIssue(jira);
-  _create.newIssue(project, options);
+  if (config && config.authNew) {
+    const jira = new JiraClient({
+      host: config.authNew.host,
+      // eslint-disable-next-line camelcase
+      basic_auth: {
+        base64: config.authNew.token
+      }
+    });
+    const _create = new CreateIssue(jira);
+    _create.newIssue(project, options);
+  }
 });
 program.command('new [key]').description('Create an issue or a sub-task').option('-p, --project <project>', 'Rapid board on which project is to be created', String).option('-P, --priority <priority>', 'priority of the issue', String).option('-T --type <type>', 'Issue type', String).option('-s --subtask <subtask>', 'Issue subtask', String).option('-S --summary <summary>', 'Issue summary', String).option('-d --description <description>', 'Issue description', String).option('-c --component <component>', 'Issue component', String).option('-l --label <label>', 'Issue label', String).option('-a --assignee <assignee>', 'Issue assignee', String).option('-v --verbose', 'Verbose debugging output').action(function (key, options) {
   options.key = key;
