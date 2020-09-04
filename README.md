@@ -497,6 +497,10 @@ Each command have individual usage help (using --help or -h)
 ##### Advanced options
 Checkout ```.jira-cli/config.json``` for more options.
 
+##### Use with Jira on-premise
+In case of jira installed on premise, the ssl certificate is usually self-signed. The superagent library used to make all the rest requests doesnt allow use of self-signed certificates unless specifically added to the request. To allow for that a new config key is added: ```use_self_signed_certificate``` - it must be set to true and the file ```jira.crt``` containing the public certificate should be added to ```.jira-cli``` directory. An alternative is to add an envinronmental variable ```JIRA_CERT``` with the certificate filepath.
+To get the ssl certificate follow these instructions: [export-download-ssl-certificate-from-server-site-url](https://medium.com/@menakajain/export-download-ssl-certificate-from-server-site-url-bcfc41ea46a2)
+
 ## MIT License
 
 Copyright (c) 2019 <danpshumaker@gmail.com>
