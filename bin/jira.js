@@ -18,6 +18,7 @@ var release = require('../lib/jira/release');
 var send = require('../lib/jira/send');
 var comment = require('../lib/jira/comment');
 var sprint = require('../lib/jira/sprint');
+
 var transitions = require('../lib/jira/transitions');
 var worklog = require('../lib/jira/worklog');
 var link = require('../lib/jira/link');
