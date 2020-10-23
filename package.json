@@ -1,7 +1,7 @@
 {
   "name": "jira-cli",
   "description": "A JIRA Command Line Interface",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": "Dan Shumaker <danpshumaker@gmail.com> (https://danshumaker.github.io/)",
   "contributors": [],
   "scripts": {
