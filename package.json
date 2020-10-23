@@ -8,12 +8,14 @@
     "test": "jest",
     "test:e2e": "bin/tests.sh && exit 1",
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
-    "dev": "node bin/jira.js",
-    "start": "npm i -g && jira",
     "clean:dev": "rimraf -rf ./.jira-cli",
+    "clean:global": "rm -rf ~/.jira-cli",
     "clean": "rimraf -rf ~/.jira-cli && npm uninstall jira-cli -g",
     "lint": "eslint . --ext .js,.ts --ignore-path .gitignore",
-    "fix": "npm run lint -- --fix"
+    "fix": "npm run lint -- --fix",
+    "start": "npm run global",
+    "dev": "node bin/jira.js",
+    "global": "npm i -g && jira"
   },
   "dependencies": {
     "@types/jest": "^25.2.3",
@@ -25,8 +27,8 @@
     "dargs": "^5.1.0",
     "fs": "0.0.1-security",
     "jira-connector": "^3.1.0",
-    "moment": "^2.29.1",
     "nodemailer": "^6.4.14",
+    "moment": "^2.29.1",
     "openurl": "^1.1.0",
     "qs": "^6.9.4",
     "superagent": "~3.7.0",
@@ -63,6 +65,7 @@
     "husky": "^4.3.0",
     "jest": "^25.3.0",
     "rimraf": "^3.0.2",
-    "testr": "0.0.5"
+    "testr": "0.0.5",
+    "jslint": "^0.12.1"
   }
 }
