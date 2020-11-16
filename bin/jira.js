@@ -126,6 +126,13 @@ program
   .action(function(query, options) {
     if (options.custom_sql) {
       ls.aggregateResults(query, options, finalCb);
+    } else if(options.json) {
+      ls.jqlSearch(query, options, (err, issues) => {
+        if(issues) {
+          console.log(JSON.stringify(issues));
+        }
+        finalCb(err);
+      });
     } else {
       ls.jqlSearch(query, options, finalCb);
     }
