@@ -18,7 +18,6 @@ var release = require('../lib/jira/release');
 var send = require('../lib/jira/send');
 var comment = require('../lib/jira/comment');
 var sprint = require('../lib/jira/sprint');
-
 var transitions = require('../lib/jira/transitions');
 var worklog = require('../lib/jira/worklog');
 var link = require('../lib/jira/link');
@@ -58,19 +57,19 @@ program
   .command('start <issue>')
   .description('Start working on an issue.')
   .action(function(issue) {
-    transitions.start(issue);
+    transitions.start(issue, finalCb);
   });
 program
   .command('stop <issue>')
   .description('Stop working on an issue.')
   .action(function(issue) {
-    transitions.stop(issue);
+    transitions.stop(issue, finalCb);
   });
 program
   .command('review <issue> [assignee]')
   .description('Mark issue as being reviewed [by assignee(optional)].')
   .action(function(issue, assignee) {
-    transitions.review(issue);
+    transitions.review(issue, finalCb);
 
     if (assignee) {
       assign.to(issue, assignee);
@@ -86,19 +85,30 @@ program
       worklog.add(issue, options.timeSpent, 'auto worklog', new Date());
     }
 
-    transitions.done(issue, options.resolution);
+    transitions.done(issue, options.resolution, finalCb);
   });
 program
   .command('invalid <issue>')
   .description('Mark issue as finished.')
   .action(function(issue,options) {
-    transitions.invalid(issue, options);
+    transitions.invalid(issue, options, finalCb);
   });
 program
-  .command('mark <issue>')
+  .command('mark <issue> [transitionId]')
   .description('Mark issue as.')
-  .action(function(issue) {
-    transitions.makeTransition(issue, finalCb);
+  .action(function(issue, transitionId) {
+    if (transitionId) { // if a transitionId is provided, go straight to transitioning the story
+      transitions.doTransition(issue, transitionId, function (err) {
+        if (err && err.includes('(502)')) { // if we get a 502 it's most likely because the transition isn't valid
+          console.log('transition (' +  transitionId + ') not valid for this issue (' + issue + ')');
+        } else {
+          console.log('marked issue with transition ' + transitionId);
+        }
+        finalCb(err);
+      });
+    } else {
+      transitions.makeTransition(issue, finalCb);
+    }
   });
 program
   .command('edit <issue> [input]')
@@ -126,9 +136,9 @@ program
   .action(function(query, options) {
     if (options.custom_sql) {
       ls.aggregateResults(query, options, finalCb);
-    } else if(options.json) {
+    } else if (options.json) {
       ls.jqlSearch(query, options, (err, issues) => {
-        if(issues) {
+        if (issues) {
           console.log(JSON.stringify(issues));
         }
         finalCb(err);
