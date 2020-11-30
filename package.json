@@ -1,7 +1,7 @@
 {
   "name": "jira-cli",
   "description": "A JIRA Command Line Interface",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "author": "Dan Shumaker <danpshumaker@gmail.com> (https://danshumaker.github.io/)",
   "contributors": [],
   "scripts": {
@@ -50,7 +50,7 @@
     "url": "git://github.com/danshumaker/jira-cli.git"
   },
   "bin": {
-    "jira": "./bin/jira.js"
+    "jira": "bin/jira.js"
   },
   "husky": {
     "hooks": {
