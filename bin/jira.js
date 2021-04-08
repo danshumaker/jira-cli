@@ -161,7 +161,10 @@ program
   });
 program
   .command('assign <issue> [accountId]')
-  .description('Assign an issue to <user>. Provide only issue# to assign to me')
+  .description(
+    'Assign an issue to <user>. Provide only issue# to assign to me.\n' +
+    'Use config (assign.unassignText) to choose what value to use to unassign an issue (default: \'null\').'
+  )
   .action(function(issue, user) {
     if (user) {
       user = config.user_alias[user] || user;
