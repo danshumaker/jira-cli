@@ -290,14 +290,33 @@ program
       if(!values) {
         values = {};
       }
+      // we can accept , separated notation or multi argument 
+      // i.e. -f "parent.id=156199" -f "issueType.id=10101" or -f "parent.id=156199, issueType.id=10101"
       for(const fields of value.split(',')) {
+        // get a single key=value pair
         const fieldName = fields.split('=')[0];
-        const fieldValue = fields.split('=')[1];
+        let fieldValue = fields.split('=')[1];
+
+        if (parseInt(fieldValue)) {
+          // if it's an integer let's treat it as such
+          fieldValue = parseInt(fieldValue);
+        } else {
+          // trim any strings so jira matches them properly
+          fieldValue = fieldValue.trim();
+          // powershell is weird about strings so sometimes it will result in fieldValue = ''string''
+          if(fieldValue.includes('\'')){
+            fieldValue = fieldValue.replaceAll('\'', '')
+          }
+          if(options.verbose) {
+            console.log('could not convert fieldValue to string');
+          }
+        }
         if(fieldName && fieldValue) {
           if (fieldName.includes('.')) {
+            // if we've used dot notation let's create the full object path
             _set(values, fieldName, fieldValue);
           } else {
-            values[fieldName.trim()] = fieldValue.trim();
+            values[fieldName.trim()] = fieldValue;
           }
         }
       }
