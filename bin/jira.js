@@ -281,6 +281,24 @@ program
   .option('-c --component <component>', 'Issue component', String)
   .option('-l --label <label>', 'Issue label', String)
   .option('-a --assignee <assignee>', 'Issue assignee', String)
+  .option(
+    '-f, --field <fields...>',
+    'Define custom fields from the command line in key=value pairs',
+    (value, previous) => {
+      let values = {...previous};
+      if(!values) {
+        values = {};
+      }
+      for(const fields of value.split(',')) {
+        const fieldName = fields.split('=')[0];
+        const fieldValue = fields.split('=')[1];
+        if(fieldName && fieldValue) {
+          values[fieldName.trim()] = fieldValue.trim();
+        }
+      }
+      return values;
+    }
+  )
   .option('-v --verbose', 'Verbose debugging output')
   .action(function(key, options) {
     options.key = key;
