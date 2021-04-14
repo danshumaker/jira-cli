@@ -305,10 +305,7 @@ program
           fieldValue = fieldValue.trim();
           // powershell is weird about strings so sometimes it will result in fieldValue = ''string''
           if(fieldValue.includes('\'')){
-            fieldValue = fieldValue.replaceAll('\'', '')
-          }
-          if(options.verbose) {
-            console.log('could not convert fieldValue to string');
+            fieldValue = fieldValue.replaceAll('\'', '');
           }
         }
         if(fieldName && fieldValue) {
