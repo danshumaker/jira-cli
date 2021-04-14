@@ -24,6 +24,7 @@ var link = require('../lib/jira/link');
 var watch = require('../lib/jira/watch');
 var addToSprint = require('../lib/jira/addToSprint');
 var newCreate = require('../lib/jira/new');
+var _set = require('lodash.set');
 
 var edit = require('../lib/jira/edit');
 
@@ -293,7 +294,11 @@ program
         const fieldName = fields.split('=')[0];
         const fieldValue = fields.split('=')[1];
         if(fieldName && fieldValue) {
-          values[fieldName.trim()] = fieldValue.trim();
+          if (fieldName.includes('.')) {
+            _set(values, fieldName, fieldValue);
+          } else {
+            values[fieldName.trim()] = fieldValue.trim();
+          }
         }
       }
       return values;

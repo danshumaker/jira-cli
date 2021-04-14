@@ -25,6 +25,7 @@
     "dargs": "^5.1.0",
     "fs": "0.0.1-security",
     "jira-connector": "^3.1.0",
+    "lodash.set": "^4.3.2",
     "moment": "^2.29.1",
     "nodemailer": "^6.4.14",
     "openurl": "^1.1.0",
