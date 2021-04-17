@@ -24,6 +24,7 @@ var link = require('../lib/jira/link');
 var watch = require('../lib/jira/watch');
 var addToSprint = require('../lib/jira/addToSprint');
 var newCreate = require('../lib/jira/new');
+var _set = require('lodash.set');
 
 var edit = require('../lib/jira/edit');
 
@@ -281,6 +282,44 @@ program
   .option('-c --component <component>', 'Issue component', String)
   .option('-l --label <label>', 'Issue label', String)
   .option('-a --assignee <assignee>', 'Issue assignee', String)
+  .option(
+    '-f, --field <fields...>',
+    'Define custom fields from the command line in key=value pairs',
+    (value, previous) => {
+      let values = {...previous};
+      if(!values) {
+        values = {};
+      }
+      // we can accept , separated notation or multi argument 
+      // i.e. -f "parent.id=156199" -f "issueType.id=10101" or -f "parent.id=156199, issueType.id=10101"
+      for(const fields of value.split(',')) {
+        // get a single key=value pair
+        const fieldName = fields.split('=')[0];
+        let fieldValue = fields.split('=')[1];
+
+        if (parseInt(fieldValue)) {
+          // if it's an integer let's treat it as such
+          fieldValue = parseInt(fieldValue);
+        } else {
+          // trim any strings so jira matches them properly
+          fieldValue = fieldValue.trim();
+          // powershell is weird about strings so sometimes it will result in fieldValue = ''string''
+          if(fieldValue.includes('\'')){
+            fieldValue = fieldValue.replaceAll('\'', '');
+          }
+        }
+        if(fieldName && fieldValue) {
+          if (fieldName.includes('.')) {
+            // if we've used dot notation let's create the full object path
+            _set(values, fieldName, fieldValue);
+          } else {
+            values[fieldName.trim()] = fieldValue;
+          }
+        }
+      }
+      return values;
+    }
+  )
   .option('-v --verbose', 'Verbose debugging output')
   .action(function(key, options) {
     options.key = key;
