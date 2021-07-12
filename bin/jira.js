@@ -80,7 +80,7 @@ program
     transitions.review(issue, finalCb);
 
     if (assignee) {
-      assign.to(issue, assignee);
+      assign.to(issue, assignee, finalCb);
     }
   });
 program
@@ -90,7 +90,7 @@ program
   .description('Mark issue as finished.')
   .action(function(issue, options) {
     if (options.timeSpent) {
-      worklog.add(issue, options.timeSpent, 'auto worklog', new Date());
+      worklog.add(issue, options.timeSpent, 'auto worklog', new Date(), finalCb);
     }
 
     transitions.done(issue, options.resolution, finalCb);
@@ -176,9 +176,9 @@ program
   .action(function(issue, user) {
     if (user) {
       user = config.user_alias[user] || user;
-      assign.to(issue, user);
+      assign.to(issue, user, finalCb);
     } else {
-      assign.me(issue);
+      assign.me(issue, finalCb);
     }
   });
 program
@@ -187,9 +187,9 @@ program
   .action(function(issue, user) {
     if (user) {
       user = config.user_alias[user];
-      watch.to(issue, user);
+      watch.to(issue, user, finalCb);
     } else {
-      watch.me(issue);
+      watch.me(issue, finalCb);
     }
   });
 program
@@ -208,9 +208,9 @@ program
           return tag;
         }
       });
-      comment.to(issue, text);
+      comment.to(issue, text, finalCb);
     } else {
-      comment.show(issue);
+      comment.show(issue, finalCb);
     }
   });
 program
@@ -219,9 +219,9 @@ program
   .option('-o, --output <field>', 'Output field content', String)
   .action(function(issue, options) {
     if (options.output) {
-      describe.show(issue, options.output);
+      describe.show(issue, options.output, cb);
     } else {
-      describe.show(issue);
+      describe.show(issue, null, cb);
     }
   });
 program
@@ -234,7 +234,7 @@ program
   .command('worklog <issue>')
   .description('Show worklog about an issue')
   .action(function(issue) {
-    worklog.show(issue);
+    worklog.show(issue, finalCb);
   });
 program
   .command('worklogadd <issue> <timeSpent> [comment]')
@@ -243,7 +243,7 @@ program
   .action(function(issue, timeSpent, comment, p) {
     var o = p.startedAt || new Date().toString(),
       s = new Date(o);
-    worklog.add(issue, timeSpent, comment, s);
+    worklog.add(issue, timeSpent, comment, s, finalCb);
   })
   .on('--help', function() {
     console.log('  Worklog Add Help:');
@@ -391,9 +391,9 @@ program
   .option('-a, --append', 'Append fix instead of over-write')
   .action(function(issue, version, options) {
     if (options.append) {
-      fix.append(issue, version);
+      fix.append(issue, version, finalCb);
     } else {
-      fix.to(issue, version);
+      fix.to(issue, version, finalCb);
     }
   });
 program
@@ -403,7 +403,7 @@ program
   .option('-d, --description <name>', 'Description', String)
   .option('-r, --released', 'Set released to true - default is false')
   .action(function(version, options) {
-    release.create(version, options);
+    release.create(version, options, finalCb);
   });
 program
   .command('send')
