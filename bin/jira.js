@@ -40,6 +40,13 @@ function finalCb(err) {
   process.exit(1);
 }
 
+// this code will ensure that in the event we're putting a large response to stdout (large json response for example)
+//   that the process does not shutdown before stdout has finished processing the response
+// https://github.com/pnp/cli-microsoft365/issues/1266
+if (process.stdout._handle) {
+  process.stdout._handle.setBlocking(true);
+}
+
 program.version(pkg.version);
 program
   .command('ls')
