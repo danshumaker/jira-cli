@@ -219,9 +219,9 @@ program
   .option('-o, --output <field>', 'Output field content', String)
   .action(function(issue, options) {
     if (options.output) {
-      describe.show(issue, options.output, cb);
+      describe.show(issue, options.output, finalCb);
     } else {
-      describe.show(issue, null, cb);
+      describe.show(issue, null, finalCb);
     }
   });
 program
