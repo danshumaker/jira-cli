@@ -18,7 +18,7 @@
   "dependencies": {
     "@types/jest": "^25.2.3",
     "alasql": "^1.7.3",
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "cheerio": "^1.0.0-rc.3",
     "cli-table": "^0.2.0",
     "commander": "~2.20.1",
